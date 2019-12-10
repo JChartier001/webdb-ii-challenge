@@ -36,7 +36,7 @@ const db = require('./data/dbConfig.js');
 
   router.put('/:id', (req, res) => {
       const changes = req.body
-      db('carInfo'),where({id: req.params.id}).update(changes)
+      db('carsInfo').where({id: req.params.id}).update(changes)
       .then( count => {
           res.status(200).json(count);
       })
@@ -47,7 +47,7 @@ const db = require('./data/dbConfig.js');
   });
 
   router.delete("/:id", (req, res) => {
-      db('carInfo').where({id: req.params.id}).del()
+      db('carsInfo').where({id: req.params.id}).del()
       .then(count => {
         res.status(200).json(count);
     })
