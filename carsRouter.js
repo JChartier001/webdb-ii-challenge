@@ -1,15 +1,17 @@
 const express = require('express');
 const knex = require('knex');
 
-const db = knex({
-    client: 'sqlite3',
-    connection: {
-      filename: './data/cars.db3'
-    },
-    useNullAsDefault: true
-  });
-
+// const db = knex({
+//     client: 'sqlite3',
+//     connection: {
+//       filename: './data/cars.db3'
+//     },
+//     useNullAsDefault: true
+//   });
+const db = require('./data/dbConfig.js');
   const router = express.Router();
+  router.use(express.json());
+
 
   router.get('/', (req, res) => {
      db.select('*').from('carsInfo').then(cars => {
@@ -28,8 +30,30 @@ const db = knex({
     })
     .catch(error => {
         console.log(error);
-       res.status(500).json({message: "There was an error retrieving cars"})
+       res.status(500).json({message: "There was an error inserting car"})
        })
+  });
+
+  router.put('/:id', (req, res) => {
+      const changes = req.body
+      db('carInfo'),where({id: req.params.id}).update(changes)
+      .then( count => {
+          res.status(200).json(count);
+      })
+      .catch(error => {
+        console.log(error);
+       res.status(500).json({message: "There was an error updating car"})
+      })
+  });
+
+  router.delete("/:id", (req, res) => {
+      db('carInfo').where({id: req.params.id}).del()
+      .then(count => {
+        res.status(200).json(count);
+    })
+    .catch(error => {
+        res.status(500).json({message: "error deleting car"})
+    })
   })
 
   module.exports = router;
